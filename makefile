@@ -20,3 +20,12 @@ phpspec: ## Launch phpspec
 
 csfixer: ## Launch csfixer
 	docker compose exec php vendor/bin/php-cs-fixer fix
+
+dmd:
+	docker compose exec php bin/console doctrine:migrations:diff
+
+dmm:
+	docker compose exec php bin/console doctrine:migrations:migrate
+
+fixture-load:
+	docker compose exec php bin/console doctrine:fixtures:load
