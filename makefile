@@ -11,3 +11,6 @@ start: ## Start project
 
 stop: ## Stop project
 	docker compose stop
+
+phpstan: ## Analyse PhpStan
+	docker compose exec php vendor/bin/phpstan analyse src
