@@ -14,3 +14,6 @@ stop: ## Stop project
 
 phpstan: ## Analyse PhpStan
 	docker compose exec php vendor/bin/phpstan analyse src
+
+phpspec: ## Launch tests
+	docker compose exec php vendor/bin/phpspec run src
