@@ -2,17 +2,21 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity]
-#[ORM\Table('Person')]
+#[ORM\Table('`person`')]
 class Person
 {
     #[ORM\Id]
-    #[ORM\Column(type: UuidType::NAME)]
-    private Uuid $id;
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private UuidV7 $id;
 
     #[ORM\Column]
     private string $firstname;
@@ -26,12 +30,23 @@ class Person
     )]
     private ?string $email;
 
-    public function __construct(string $firstname, string $lastname, string $email = null)
-    {
-        $this->id = Uuid::v4();
+    /**
+     * @var Collection<int, Group>
+     */
+    #[ManyToMany(targetEntity: Group::class, mappedBy: 'persons')]
+    private Collection $groups;
+
+    public function __construct(
+        string $firstname,
+        string $lastname,
+        string $email = null
+    ) {
+        $this->id = Uuid::v7();
         $this->firstname = $firstname;
         $this->lastname = $lastname;
         $this->email = $email;
+
+        $this->groups = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -72,5 +87,13 @@ class Person
     public function getFullname(): string
     {
         return trim($this->firstname).' '.trim($this->lastname);
+    }
+
+    /**
+     * @return Collection<int, Group>
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
     }
 }
