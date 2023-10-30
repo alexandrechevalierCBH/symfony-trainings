@@ -30,12 +30,9 @@ class GroupFixtures extends Fixture implements DependentFixtureInterface
 
             $group = new Group(
                 $label,
+                $persons,
                 $description
             );
-
-            foreach ($persons as $person) {
-                $group->addPerson($person);
-            }
 
             $manager->persist($group);
         }

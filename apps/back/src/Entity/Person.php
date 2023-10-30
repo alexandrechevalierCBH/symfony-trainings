@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\ManyToMany;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV7;
@@ -33,8 +32,14 @@ class Person
     /**
      * @var Collection<int, Group>
      */
-    #[ManyToMany(targetEntity: Group::class, mappedBy: 'persons')]
+    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'persons')]
     private Collection $groups;
+
+    /**
+     * @var Collection<int, Expense>
+     */
+    #[ORM\ManyToMany(targetEntity: Expense::class, mappedBy: 'beneficiaries')]
+    private Collection $expenses;
 
     public function __construct(
         string $firstname,
@@ -47,6 +52,7 @@ class Person
         $this->email = $email;
 
         $this->groups = new ArrayCollection();
+        $this->expenses = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -95,5 +101,13 @@ class Person
     public function getGroups(): Collection
     {
         return $this->groups;
+    }
+
+    /**
+     * @return Collection<int, Expense>
+     */
+    public function getExpenses(): Collection
+    {
+        return $this->expenses;
     }
 }

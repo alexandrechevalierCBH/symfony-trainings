@@ -5,8 +5,6 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinTable;
-use Doctrine\ORM\Mapping\ManyToMany;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV7;
@@ -28,19 +26,34 @@ class Group
     /**
      * @var Collection<int, Person>
      */
-    #[ManyToMany(targetEntity: Person::class, inversedBy: 'groups')]
-    #[JoinTable(name: 'group_person')]
+    #[ORM\ManyToMany(targetEntity: Person::class, inversedBy: 'groups')]
+    #[ORM\JoinTable(name: 'group_person')]
     private Collection $persons;
 
+    /**
+     * @var Collection<int, Expense>
+     */
+    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'group')]
+    private Collection $expenses;
+
+    /**
+     * @param array<Person> $persons
+     */
     public function __construct(
         string $label,
+        array $persons,
         string $description = null
     ) {
+        if (0 === count($persons)) {
+            throw new \InvalidArgumentException('should have at least 1 person');
+        }
+
         $this->id = Uuid::v7();
         $this->label = $label;
         $this->description = $description;
 
-        $this->persons = new ArrayCollection();
+        $this->persons = new ArrayCollection($persons);
+        $this->expenses = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -66,8 +79,11 @@ class Group
         return $this->persons;
     }
 
-    public function addPerson(Person $person): void
+    /**
+     * @return Collection<int, Expense>
+     */
+    public function getExpenses(): Collection
     {
-        $this->persons->add($person);
+        return $this->expenses;
     }
 }
