@@ -34,7 +34,7 @@ class Expense
     #[ORM\JoinTable(name: 'expense_person')]
     private Collection $beneficiaries;
 
-    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'expenses')]
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'expenses', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id')]
     private Group $group;
 
@@ -87,5 +87,25 @@ class Expense
     public function getGroup(): Group
     {
         return $this->group;
+    }
+
+    public function getUnitaryShared(): float
+    {
+        return floatval(number_format($this->amount / count($this->beneficiaries), 2));
+    }
+
+    public function getUserShare(Person $person): float
+    {
+        $balance = 0;
+
+        if ($person === $this->payer) {
+            $balance += $this->amount;
+        }
+
+        if ($this->beneficiaries->contains($person)) {
+            $balance -= $this->getUnitaryShared();
+        }
+
+        return $balance;
     }
 }

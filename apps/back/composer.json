@@ -23,7 +23,8 @@
         "fakerphp/faker": "^1.23",
         "friendsofphp/php-cs-fixer": "^3.35",
         "phpspec/phpspec": "^7.4",
-        "phpstan/phpstan": "^1.10"
+        "phpstan/phpstan": "^1.10",
+        "webmozart/assert": "^1.11"
     },
     "config": {
         "allow-plugins": {

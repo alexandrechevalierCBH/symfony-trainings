@@ -18,7 +18,7 @@ class ExpenseSpec extends ObjectBehavior
         $this->beConstructedWith(
             'restaurant',
             $group,
-            8.66,
+            100,
             $john,
             $beneficiaries
         );
@@ -31,7 +31,7 @@ class ExpenseSpec extends ObjectBehavior
 
     public function it_returns_the_amount()
     {
-        $this->getAmount()->shouldReturn(8.66);
+        $this->getAmount()->shouldReturn(floatval(100));
     }
 
     public function it_returns_john()
@@ -52,5 +52,23 @@ class ExpenseSpec extends ObjectBehavior
     public function it_returns_a_Group()
     {
         $this->getGroup()->shouldHaveType(Group::class);
+    }
+
+    public function it_returns_the_unitary_shared()
+    {
+        $this->getUnitaryShared()->shouldReturn(floatval(50));
+    }
+
+    public function it_calculates_user_share(Person $john, Person $jane, Group $group)
+    {
+        $this->getUserShare($john)->shouldBe(floatval(50));
+        $this->getUserShare($jane)->shouldBe(floatval(-50));
+    }
+
+    public function it_throws_exception_if_no_beneficiaries(Person $payer, Group $group)
+    {
+        $this->beConstructedWith('Expense description', $group, floatval(100), $payer, []);
+
+        $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
     }
 }

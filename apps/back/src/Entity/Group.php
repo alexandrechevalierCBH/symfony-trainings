@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Services\BalanceCalculator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,14 +27,14 @@ class Group
     /**
      * @var Collection<int, Person>
      */
-    #[ORM\ManyToMany(targetEntity: Person::class, inversedBy: 'groups')]
+    #[ORM\ManyToMany(targetEntity: Person::class, inversedBy: 'groups', cascade: ['persist'])]
     #[ORM\JoinTable(name: 'group_person')]
     private Collection $persons;
 
     /**
      * @var Collection<int, Expense>
      */
-    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'group')]
+    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'group', cascade: ['remove'])]
     private Collection $expenses;
 
     /**
@@ -79,11 +80,60 @@ class Group
         return $this->persons;
     }
 
+    public function addPerson(Person $person): void
+    {
+        if (!$this->persons->contains($person)) {
+            $this->persons->add($person);
+        }
+    }
+
+    /**
+     * @param array<Person> $members
+     */
+    public function addPersons(array $members): void
+    {
+        foreach ($members as $member) {
+            $this->addPerson($member);
+        }
+    }
+
     /**
      * @return Collection<int, Expense>
      */
     public function getExpenses(): Collection
     {
         return $this->expenses;
+    }
+
+    public function getTotalExpenses(): float
+    {
+        $expenses = $this->getExpenses()->map(static fn (Expense $expense) => $expense->getAmount());
+
+        return array_sum($expenses->toArray());
+    }
+
+    public function addExpense(Expense $expense): void
+    {
+        if (!$this->expenses->contains($expense)) {
+            $this->expenses->add($expense);
+        }
+    }
+
+    /**
+     * @param array<Expense> $expensesList
+     */
+    public function addExpenses(array $expensesList): void
+    {
+        foreach ($expensesList as $expense) {
+            $this->addExpense($expense);
+        }
+    }
+
+    /**
+     * @return array<Balance>
+     */
+    public function getBalances(): array
+    {
+        return BalanceCalculator::getBalances($this);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace spec\App\Entity;
 
+use App\Entity\Balance;
 use App\Entity\Expense;
 use App\Entity\Group;
 use App\Entity\Person;
@@ -12,9 +13,13 @@ use Symfony\Component\Uid\Uuid;
 
 class GroupSpec extends ObjectBehavior
 {
-    public function let(Person $john, Person $jane, Expense $expense1, Expense $expense2)
+    public function let(Person $john, Person $jane, Expense $expense1, Expense $expense2, Balance $balance1, Balance $balance2)
     {
-        $this->beConstructedWith('group label', [$john, $jane], 'group description', [$expense1, $expense2]);
+        $expense1->getAmount()->willReturn(47);
+        $expense2->getAmount()->willReturn(100);
+
+        $this->beConstructedWith('group label', [$john, $jane], 'group description');
+        $this->addExpenses([$expense1, $expense2]);
 
         $this->getPersons()->shouldHaveType(Collection::class);
         $this->getId()->shouldHaveType(Uuid::class);
@@ -43,5 +48,10 @@ class GroupSpec extends ObjectBehavior
     public function it_returns_group_description()
     {
         $this->getDescription()->shouldReturn('group description');
+    }
+
+    public function it_returns_the_total_amount_of_group_expenses()
+    {
+        $this->getTotalExpenses()->shouldReturn(floatval(147));
     }
 }
