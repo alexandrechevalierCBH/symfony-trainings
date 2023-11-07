@@ -21,7 +21,7 @@ class ExpenseFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create();
 
-        for ($i = 0; $i < 5; ++$i) {
+        for ($i = 0; $i < 10; ++$i) {
             $groupRepo = $this->em->getRepository(Group::class);
             $groups = $groupRepo->findAll();
 

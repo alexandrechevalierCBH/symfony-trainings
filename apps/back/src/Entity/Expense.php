@@ -23,7 +23,7 @@ class Expense
     #[ORM\Column(type: 'float')]
     private float $amount;
 
-    #[ORM\OneToOne(targetEntity: Person::class)]
+    #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'payer_id')]
     private Person $payer;
 
