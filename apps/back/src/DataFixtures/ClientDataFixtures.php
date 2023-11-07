@@ -30,11 +30,11 @@ class ClientDataFixtures extends Fixture
         );
 
         $expenses = [
-            new Expense("Tournée générale -- Cas d'une personne qui paye pour tout le monde (lui compris)", $group, 55.00, $jason, [$jason, $silvestre, $arnold, $bruce, $jet]),
-            new Expense("Cadeau Arnold -- Cas d'une personne qui paye pour un ensemble de bénéficiaires (lui y compris)", $group, 60.00, $silvestre, [$jason, $silvestre, $bruce, $jet]),
-            new Expense("Remboursement Jet->silvestre -- Cas d'une personne qui rembourse à une autre personne", $group, 15.00, $jet, [$silvestre]),
-            new Expense("Bruce et son burger -- Cas d'une personne qui prend quelques chose uniquement pour elle", $group, 16.00, $bruce, [$bruce]),
-            new Expense("Kebab pour tous sauf Bruce et Arnold -- Cas d'une personne qui paye pour un ensemble de bénéficiaires (sans lui)", $group, 45.00, $arnold, [$jason, $silvestre, $jet]),
+            new Expense("Tournée générale -- Cas d'une personne qui paye pour tout le monde (lui compris)", $group, 5500, $jason, [$jason, $silvestre, $arnold, $bruce, $jet]),
+            new Expense("Cadeau Arnold -- Cas d'une personne qui paye pour un ensemble de bénéficiaires (lui y compris)", $group, 6000, $silvestre, [$jason, $silvestre, $bruce, $jet]),
+            new Expense("Remboursement Jet->silvestre -- Cas d'une personne qui rembourse à une autre personne", $group, 1500, $jet, [$silvestre]),
+            new Expense("Bruce et son burger -- Cas d'une personne qui prend quelques chose uniquement pour elle", $group, 1600, $bruce, [$bruce]),
+            new Expense("Kebab pour tous sauf Bruce et Arnold -- Cas d'une personne qui paye pour un ensemble de bénéficiaires (sans lui)", $group, 4500, $arnold, [$jason, $silvestre, $jet]),
         ];
 
         foreach ($expenses as $expense) {

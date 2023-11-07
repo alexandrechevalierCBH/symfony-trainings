@@ -52,6 +52,6 @@ class GroupSpec extends ObjectBehavior
 
     public function it_returns_the_total_amount_of_group_expenses()
     {
-        $this->getTotalExpenses()->shouldReturn(floatval(147));
+        $this->getTotalExpenses()->shouldReturn(147);
     }
 }

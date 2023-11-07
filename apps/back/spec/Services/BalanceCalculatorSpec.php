@@ -38,9 +38,9 @@ class BalanceCalculatorSpec extends ObjectBehavior
             ]
         );
 
-        $expense1 = new Expense('exp1', $group, floatval(90), $jane, [$john, $jane, $jill]);
-        $expense2 = new Expense('exp2', $group, floatval(47), $jill, [$john, $jane]);
-        $expense3 = new Expense('exp3', $group, floatval(10), $jill, [$john, $jill, $jane]);
+        $expense1 = new Expense('exp1', $group, 9000, $jane, [$john, $jane, $jill]);
+        $expense2 = new Expense('exp2', $group, 4700, $jill, [$john, $jane]);
+        $expense3 = new Expense('exp3', $group, 1000, $jill, [$john, $jill, $jane]);
 
         $group->addExpenses(
             [

@@ -35,7 +35,7 @@ class ExpenseFixtures extends Fixture implements DependentFixtureInterface
             $expense = new Expense(
                 $faker->sentence(),
                 $group,
-                $faker->randomFloat(2, 8, 128),
+                random_int(800, 12800),
                 $payer,
                 $beneficiaries->toArray(),
             );

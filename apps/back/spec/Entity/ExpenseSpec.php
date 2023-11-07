@@ -31,7 +31,7 @@ class ExpenseSpec extends ObjectBehavior
 
     public function it_returns_the_amount()
     {
-        $this->getAmount()->shouldReturn(floatval(100));
+        $this->getAmount()->shouldReturn(100);
     }
 
     public function it_returns_john()
@@ -56,18 +56,18 @@ class ExpenseSpec extends ObjectBehavior
 
     public function it_returns_the_unitary_shared()
     {
-        $this->getUnitaryShared()->shouldReturn(floatval(50));
+        $this->getUnitaryShared()->shouldReturn(50);
     }
 
     public function it_calculates_user_share(Person $john, Person $jane, Group $group)
     {
-        $this->getUserShare($john)->shouldBe(floatval(50));
-        $this->getUserShare($jane)->shouldBe(floatval(-50));
+        $this->getUserShare($john)->shouldBe(50);
+        $this->getUserShare($jane)->shouldBe(-50);
     }
 
     public function it_throws_exception_if_no_beneficiaries(Person $payer, Group $group)
     {
-        $this->beConstructedWith('Expense description', $group, floatval(100), $payer, []);
+        $this->beConstructedWith('Expense description', $group, 100, $payer, []);
 
         $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
     }

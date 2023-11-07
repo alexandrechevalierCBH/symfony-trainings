@@ -105,7 +105,7 @@ class Group
         return $this->expenses;
     }
 
-    public function getTotalExpenses(): float
+    public function getTotalExpenses(): int
     {
         $expenses = $this->getExpenses()->map(static fn (Expense $expense) => $expense->getAmount());
 

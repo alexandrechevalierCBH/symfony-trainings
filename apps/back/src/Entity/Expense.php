@@ -20,8 +20,8 @@ class Expense
     #[ORM\Column]
     private string $description;
 
-    #[ORM\Column(type: 'float')]
-    private float $amount;
+    #[ORM\Column(type: 'integer')]
+    private int $amount;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'payer_id')]
@@ -41,7 +41,7 @@ class Expense
     /**
      * @param array<Person> $beneficiaries
      */
-    public function __construct(string $description, Group $group, float $amount, Person $payer, array $beneficiaries)
+    public function __construct(string $description, Group $group, int $amount, Person $payer, array $beneficiaries)
     {
         if (0 === count($beneficiaries)) {
             throw new \InvalidArgumentException('should have at least 1 beneficiary');
@@ -66,7 +66,7 @@ class Expense
         return $this->description;
     }
 
-    public function getAmount(): float
+    public function getAmount(): int
     {
         return $this->amount;
     }
@@ -89,12 +89,12 @@ class Expense
         return $this->group;
     }
 
-    public function getUnitaryShared(): float
+    public function getUnitaryShared(): int
     {
-        return floatval(number_format($this->amount / count($this->beneficiaries), 2));
+        return intval($this->amount / count($this->beneficiaries));
     }
 
-    public function getUserShare(Person $person): float
+    public function getUserShare(Person $person): int
     {
         $balance = 0;
 

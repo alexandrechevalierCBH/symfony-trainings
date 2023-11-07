@@ -5,9 +5,9 @@ namespace App\Entity;
 class Balance
 {
     private Person $member;
-    private float $amount;
+    private int $amount;
 
-    public function __construct(Person $member, float $amount)
+    public function __construct(Person $member, int $amount)
     {
         $this->member = $member;
         $this->amount = $amount;
@@ -18,12 +18,12 @@ class Balance
         return $this->member;
     }
 
-    public function getAmount(): float
+    public function getAmount(): int
     {
         return $this->amount;
     }
 
-    public function setAmount(float $amount): void
+    public function setAmount(int $amount): void
     {
         $this->amount = $amount;
     }
