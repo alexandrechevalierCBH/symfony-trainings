@@ -18,6 +18,9 @@ class Expense
     private UuidV7 $id;
 
     #[ORM\Column]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column]
     private string $description;
 
     #[ORM\Column(type: 'integer')]
@@ -48,6 +51,7 @@ class Expense
         }
 
         $this->id = Uuid::v7();
+        $this->createdAt = new \DateTimeImmutable();
         $this->description = $description;
         $this->group = $group;
         $this->amount = $amount;
@@ -59,6 +63,11 @@ class Expense
     public function getId(): Uuid
     {
         return $this->id;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     public function getDescription(): string

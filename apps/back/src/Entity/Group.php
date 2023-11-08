@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Services\BalanceCalculator;
+use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,7 +20,13 @@ class Group
     private UuidV7 $id;
 
     #[ORM\Column]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column]
     private string $label;
+
+    #[ORM\Column(unique: true)]
+    private string $slug;
 
     #[ORM\Column(nullable: true)]
     private ?string $description;
@@ -49,10 +56,13 @@ class Group
             throw new \InvalidArgumentException('should have at least 1 person');
         }
 
+        $slugify = new Slugify();
+
         $this->id = Uuid::v7();
+        $this->createdAt = new \DateTimeImmutable();
         $this->label = $label;
         $this->description = $description;
-
+        $this->slug = $slugify->slugify(substr($label, 0, 25));
         $this->persons = new ArrayCollection($persons);
         $this->expenses = new ArrayCollection();
     }
@@ -60,6 +70,16 @@ class Group
     public function getId(): Uuid
     {
         return $this->id;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
     }
 
     public function getLabel(): string

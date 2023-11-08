@@ -54,4 +54,11 @@ class GroupSpec extends ObjectBehavior
     {
         $this->getTotalExpenses()->shouldReturn(147);
     }
+
+    public function it_creates_the_slug_from_the_label()
+    {
+        $slug = 'group-label';
+
+        $this->getSlug()->shouldBe($slug);
+    }
 }
