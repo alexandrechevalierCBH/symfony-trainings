@@ -22,7 +22,6 @@ final class Version20231026140927 extends AbstractMigration
         $this->addSql('ALTER TABLE `expense` ADD CONSTRAINT FK_2D3A8DA6FE54D947 FOREIGN KEY (group_id) REFERENCES `group` (id)');
         $this->addSql('ALTER TABLE expense_person ADD CONSTRAINT FK_F2730063F395DB7B FOREIGN KEY (expense_id) REFERENCES `expense` (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE expense_person ADD CONSTRAINT FK_F2730063217BBB47 FOREIGN KEY (person_id) REFERENCES `person` (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE person RENAME INDEX uniq_3370d440e7927c74 TO UNIQ_34DCD176E7927C74');
     }
 
     public function down(Schema $schema): void
@@ -33,6 +32,5 @@ final class Version20231026140927 extends AbstractMigration
         $this->addSql('ALTER TABLE expense_person DROP FOREIGN KEY FK_F2730063217BBB47');
         $this->addSql('DROP TABLE `expense`');
         $this->addSql('DROP TABLE expense_person');
-        $this->addSql('ALTER TABLE `person` RENAME INDEX uniq_34dcd176e7927c74 TO UNIQ_3370D440E7927C74');
     }
 }
