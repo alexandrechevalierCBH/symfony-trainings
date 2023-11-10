@@ -82,6 +82,11 @@ class Group
         return $this->slug;
     }
 
+    public function setSlug(string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
     public function getLabel(): string
     {
         return $this->label;
