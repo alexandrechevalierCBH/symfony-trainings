@@ -53,8 +53,8 @@ class GroupType extends AbstractType
                 'help' => "Le groupe sera accessible à l'adresse /group/$time-mon-super-nom-de-groupe",
                 'label' => 'URL du groupe',
                 'attr' => [
-                    'placeholder' => "mon super nom de groupe"
-                ]
+                    'placeholder' => 'Mon super nom de groupe',
+                ],
             ])
 
             ->add('save', SubmitType::class, [

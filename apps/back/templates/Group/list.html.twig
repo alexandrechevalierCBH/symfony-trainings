@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block groupList %}
+  <div class="container-sm">
+    <h1>Liste des groupes</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col" colspan="2">Groupe</th>
+          <th scope="col" colspan="2">Membres</th>
+          <th scope="col">Dépenses</th>
+          <th scope="col" colspan="2">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for group in groups %}
+          <tr>
+            <td colspan="2">{{ group.getLabel }}</td>
+            <td colspan="2">{{ group.getPersons|map(person=> person.getFirstname)|join(' - ')|ucWords }}</td>
+            <td>{{ group.getExpenses|length == 0 ? "-" : group.getExpenses|length }}</td>
+            <td colspan="2">{{ group.getTotalExpenses == 0 ? "-" : group.getTotalExpenses|price }}</td>
+            <td colspan="2"><a href={{ group.getSlug|linkFromSlug }}><i class="fa-solid fa-eye"></i></a>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+
+
