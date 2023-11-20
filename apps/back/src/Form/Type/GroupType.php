@@ -5,6 +5,7 @@ namespace App\Form\Type;
 use App\Entity\Person;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,6 +21,10 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class GroupType extends AbstractType
 {
+    public function __construct(private ParameterBagInterface $parameterBag)
+    {
+    }
+
     /**
      * @param array{
      *  data?: array{
@@ -32,6 +37,8 @@ class GroupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $time = $options['data']['data']['time'] ?? time();
+        /** @var string $appUrl */
+        $appUrl = $this->parameterBag->get('APP_URL');
 
         $builder
             ->add('label', TextType::class, [
@@ -50,10 +57,12 @@ class GroupType extends AbstractType
             ])
 
             ->add('slug', TextType::class, [
-                'help' => "Le groupe sera accessible à l'adresse /group/$time-mon-super-nom-de-groupe",
+                'help' => "Le groupe sera accessible à l'adresse $appUrl/group/$time-",
                 'label' => 'URL du groupe',
                 'attr' => [
                     'placeholder' => 'Mon super nom de groupe',
+                    'data-time' => $time,
+                    'data-appUrl' => $appUrl,
                 ],
             ])
 

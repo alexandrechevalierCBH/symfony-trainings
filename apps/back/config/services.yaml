@@ -1,4 +1,5 @@
 parameters:
+    APP_URL: "%env(APP_URL)%"
 
 services:
     _defaults:

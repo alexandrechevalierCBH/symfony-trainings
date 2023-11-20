@@ -3,5 +3,8 @@
 	<div class="container-sm">
 		<h1>Créer un nouveau groupe</h1>
 		{{ form(createGroupForm) }}
-	</div>
-{% endblock %}
+		</div>
+	{% endblock %}
+	{% block javascripts %}
+		<script src="/assets/scripts/createGroupSlug.js"></script>
+	{% endblock %}
