@@ -13,9 +13,9 @@
 						<i class="fa-solid fa-bomb fa-bounce pl-10" style="color: #ff0008;"></i>
 					{% endif %}
 				</h5>
-				{% if group.getDescription %}
-					<p class="card-text">{{ group.getDescription }}</p>
-				{% endif %}
+					{% if group.getDescription %}
+						<p class="card-text">{{ group.getDescription }}</p>
+					{% endif %}
 			</div>
 			<div class="accordion" id="accordionExample">
 				<div class="accordion-item">
@@ -47,27 +47,36 @@
 				</div>
 				<div class="accordion-item">
 					<h2 class="accordion-header">
-						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#groupexpenses" aria-expanded="true" aria-controls="groupexpenses">
-							{{ group.getExpenses|length }}
-							{{ group.getExpenses|length > 1 ? 'dépenses' : 'dépense' }}
+						<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#groupexpenses" aria-expanded="true" aria-controls="groupexpenses">
+							{{ group.expenses|length }}
+							{{ group.expenses|length > 1 ? 'dépenses' : 'dépense' }}
 						</button>
 					</h2>
-					<div id="groupexpenses" class="accordion-collapse collapsed collapse">
-						{% set lastExpenses = group.getExpenses|slice(0,3) %}
-						{% for expense in lastExpenses %}
+					<div id="groupexpenses" class="accordion-collapse collapsed show">
+						{% for expense in tenExpenses %}
 							<div class="accordion-body">
 								<div class="d-flex justify-content-between">
-									<div>{{ expense.getDescription|capitalize }}</div>
+									<div>
+										{{ expense.description|capitalize }}
+									</div>
 									<div>
 										<small class="text-primary">
 											montant:
 										</small>
-										{{ expense.getAmount|price('euros') }}</div>
+										{{ expense.amount|price('euros') }}
+									</div>
 								</div>
 							</div>
 						{% endfor %}
-						{% if lastExpenses|length < group.getExpenses|length %}
-							<button type="button" class="btn btn-info w-100">Voir toutes les dépenses</button>
+						{% if group.expenses|length > tenExpenses|length %}
+							<div class="d-flex justify-content-center">
+							{% if page > 2 %}
+								<a class="prev-ten"href={{ group.slug|prevTen(page, step) }}>Page précédente</a>
+							{% endif %}
+							{% if group.expenses|length > ((page - 1) * step) %}
+								<a class="next-ten" href={{ group.slug|nextTen(page, step) }}>Page suivante</a>
+							{% endif %}
+							</div>
 						{% endif %}
 					</div>
 				</div>
