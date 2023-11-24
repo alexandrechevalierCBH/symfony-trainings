@@ -21,12 +21,12 @@ class ExpenseRepository extends ServiceEntityRepository
     /**
      * @return ?array<int, Expense>
      */
-    public function findAndPaginateExpenses(Group $group, int $firstResult, int $step): array|null
+    public function findAndPaginateExpenses(Group $group, int $page, int $step): array|null
     {
         return $this->createQueryBuilder('e')
             ->where('e.group = :group')
             ->setParameter('group', $group->getId(), UuidType::NAME)
-            ->setFirstResult($firstResult * $step - $step)
+            ->setFirstResult($page * $step - $step)
             ->setMaxResults($step)
             ->getQuery()
             ->getResult()

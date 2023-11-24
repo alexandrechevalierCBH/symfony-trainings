@@ -5,79 +5,81 @@
 		<div class="card border border-2">
 			<div class="card-body">
 				<h5 class="card-title text-center">
-					{% if group.getLabel == "Les expensables" %}
+					{% if group.label is same as("Les expensables") %}
 						<i class="fa-solid fa-gun fa-shake" style="color: #31c0d3;"></i>
 					{% endif %}
-					{{ group.getLabel|upper }}
-					{% if group.getLabel == "Les expensables" %}
+					{{ group.label|upper }}
+					{% if group.label is same as("Les expensables") %}
 						<i class="fa-solid fa-bomb fa-bounce pl-10" style="color: #ff0008;"></i>
 					{% endif %}
 				</h5>
-					{% if group.getDescription %}
-						<p class="card-text">{{ group.getDescription }}</p>
-					{% endif %}
+				{% if group.description %}
+					<p class="card-text">{{ group.description }}</p>
+				{% endif %}
 			</div>
 			<div class="accordion" id="accordionExample">
 				<div class="accordion-item">
 					<h2 class="accordion-header">
 						<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#groupmembers" aria-expanded="true" aria-controls="groupmembers">
-							{{ group.getPersons|length }}
-							{{ group.getPersons|length > 1 ? "membres": "membre"}}
+							{{ group.persons|length }}
+							{{ group.persons|length > 1 ? "membres": "membre"}}
 						</button>
 					</h2>
 					<div id="groupmembers" class="accordion-collapse collapse show">
-						{% for member in group.getBalances %}
-							<div class="accordion-body">
-								<div class="d-flex justify-content-between">
-									<div>
-										{{ member.getMember.getFullname|ucWords }}
-									</div>
-									{% if member.getAmount != 0 %}
-										<div>
-											<small class={{ member.getAmount > 0 ? "text-success" : "text-danger"}}>
-												solde:
-											</small>
-											{{ member.getAmount == 0 ? "-" : member.getAmount|price('euros')}}
-										</div>
-									{% endif %}
-								</div>
-							</div>
-						{% endfor %}
+						<div class="accordion-body">
+							<table class="table table-striped">
+								{% for member in group.balances %}
+									<tr>
+										<td>
+											{{ member.member.fullname|ucWords }}
+										</td>
+										{% if member.amount is not same as(0) %}
+											<td class="d-flex justify-content-end">
+												<span class={{ member.amount > 0 ? "text-success" : "text-danger"}}>
+													{{ member.amount is same as(0) ? "-" : member.amount|price('euros')}}
+												</span>
+											</td>
+										{% endif %}
+									</tr>
+								{% endfor %}
+							</table>
+						</div>
 					</div>
-				</div>
-				<div class="accordion-item">
-					<h2 class="accordion-header">
-						<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#groupexpenses" aria-expanded="true" aria-controls="groupexpenses">
-							{{ group.expenses|length }}
-							{{ group.expenses|length > 1 ? 'dépenses' : 'dépense' }}
-						</button>
-					</h2>
-					<div id="groupexpenses" class="accordion-collapse collapsed show">
-						{% for expense in tenExpenses %}
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#groupexpenses" aria-expanded="true" aria-controls="groupexpenses">
+								{{ group.expenses|length }}
+								{{ group.expenses|length > 1 ? 'dépenses' : 'dépense' }}
+							</button>
+						</h2>
+						<div id="groupexpenses" class="accordion-collapse collapsed show">
 							<div class="accordion-body">
-								<div class="d-flex justify-content-between">
-									<div>
-										{{ expense.description|capitalize }}
+								<table class="table table-striped">
+									{% for expense in paginatedExpenses %}
+										<tr>
+											<td>
+												{{ expense.description|capitalize }}
+											</td>
+											<td class="d-flex justify-content-end">
+												<span class="text-primary">
+													{{ expense.amount|price('euros') }}
+												</span>
+											</td>
+										</tr>
+									{% endfor %}
+								</table>
+								{% if group.expenses|length > paginatedExpenses|length %}
+									<div class="d-flex justify-content-center">
+										{% if page > 2 %}
+											<a class="previous-expenses" href={{ path('group_show', {slug: group.slug} )|previousExpenses(page, step) }}>Page précédente</a>
+										{% endif %}
+										{% if group.expenses|length > ((page - 1) * step) %}
+											<a class="next-expenses" href={{ path('group_show', {slug: group.slug} )|nextExpenses(page, step) }}>Page suivante</a>
+										{% endif %}
 									</div>
-									<div>
-										<small class="text-primary">
-											montant:
-										</small>
-										{{ expense.amount|price('euros') }}
-									</div>
-								</div>
+								{% endif %}
 							</div>
-						{% endfor %}
-						{% if group.expenses|length > tenExpenses|length %}
-							<div class="d-flex justify-content-center">
-							{% if page > 2 %}
-								<a class="prev-ten"href={{ group.slug|prevTen(page, step) }}>Page précédente</a>
-							{% endif %}
-							{% if group.expenses|length > ((page - 1) * step) %}
-								<a class="next-ten" href={{ group.slug|nextTen(page, step) }}>Page suivante</a>
-							{% endif %}
-							</div>
-						{% endif %}
+						</div>
 					</div>
 				</div>
 			</div>

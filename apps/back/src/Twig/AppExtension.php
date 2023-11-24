@@ -27,8 +27,8 @@ class AppExtension extends AbstractExtension
             new TwigFilter('price', [$this, 'formatPrice']),
             new TwigFilter('ucWords', [$this, 'ucWords']),
             new TwigFilter('linkFromSlug', [$this, 'linkFromSlug']),
-            new TwigFilter('nextTen', [$this, 'nextTen']),
-            new TwigFilter('prevTen', [$this, 'prevTen']),
+            new TwigFilter('nextExpenses', [$this, 'nextExpenses']),
+            new TwigFilter('previousExpenses', [$this, 'previousExpenses']),
         ];
     }
 
@@ -59,31 +59,23 @@ class AppExtension extends AbstractExtension
         );
     }
 
-    public function nextTen(string $slug, int $page, int $step): string
+    public function nextExpenses(string $url, int $page, int $step): string
     {
         return sprintf(
             '%s%s%s',
-            $this->showSingleUrl,
-            $slug,
-            sprintf(
-                '%s%s',
-                "?page=$page",
-                "&step=$step"
-            )
+            $url,
+            "?page=$page",
+            "&step=$step",
         );
     }
 
-    public function prevTen(string $slug, int $page, int $step): string
+    public function previousExpenses(string $url, int $page, int $step): string
     {
         return sprintf(
             '%s%s%s',
-            $this->showSingleUrl,
-            $slug,
-            sprintf(
-                '%s%s',
-                '?page='.($page - 2),
-                "&step=$step"
-            )
+            $url,
+            '?page='.($page - 2),
+            "&step=$step"
         );
     }
 }
