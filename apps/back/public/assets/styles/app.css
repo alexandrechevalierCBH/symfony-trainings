@@ -1,12 +1,19 @@
-body
-{
-    font-family: 'Roboto', sans-serif;
+body {
+  font-family: "Roboto", sans-serif;
 }
 
 .previous-expenses {
-    margin-right: 20px;
+  margin-right: 20px;
 }
 
 .next-expenses {
-    margin-left: 20px;
+  margin-left: 20px;
+}
+
+.full-div-link {
+  display: block;
+  height: 100%;
+  width: 100%;
+  text-decoration: none;
+  color: black;
 }

@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CreateController extends AbstractController
 {
-    #[Route('group/create', methods: ['GET', 'POST'])]
+    #[Route('group/create', methods: ['GET', 'POST'], name: 'group_create')]
     public function create(EntityManagerInterface $em, Request $request): Response
     {
         $time = time();

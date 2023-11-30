@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
-{% block body %}
+{% block title %}Créer un groupe{% endblock %}
+{% block groupCreate %}
 	<div class="container-sm">
 		<h1>Créer un nouveau groupe</h1>
 		{{ form(createGroupForm) }}
-		</div>
-	{% endblock %}
-	{% block javascripts %}
-		<script src="/assets/scripts/createGroupSlug.js"></script>
-	{% endblock %}
+	</div>
+{% endblock %}
+{% block javascripts %}
+	<script src="/assets/scripts/createGroupSlug.js"></script>
+{% endblock %}

@@ -1,29 +1,32 @@
 {% extends 'base.html.twig' %}
+{% block title %}Liste des groupes{% endblock %}
 
 {% block groupList %}
   <div class="container-sm">
     <h1>Liste des groupes</h1>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col" colspan="2">Groupe</th>
-          <th scope="col" colspan="2">Membres</th>
-          <th scope="col">Dépenses</th>
-          <th scope="col" colspan="2">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for group in groups %}
+    {% if groups|length is same as(0) %}
+      Il n'y a pas de groupe pour le moment.
+    {% else %}
+      <table class="table table-striped">
+        <thead>
           <tr>
-            <td colspan="2">{{ group.getLabel }}</td>
-            <td colspan="2">{{ group.getPersons|map(person=> person.getFirstname)|join(' - ')|ucWords }}</td>
-            <td>{{ group.getExpenses|length == 0 ? "-" : group.getExpenses|length }}</td>
-            <td colspan="2">{{ group.getTotalExpenses == 0 ? "-" : group.getTotalExpenses|price }}</td>
-            <td colspan="2"><a href={{ group.getSlug|linkFromSlug }}><i class="fa-solid fa-eye"></i></a>
+            <th scope="col" colspan="2">Groupe</th>
+            <th scope="col" colspan="2">Membres</th>
+            <th scope="col" colspan="2">Total</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {% for group in groups %}
+            <tr>
+              <td colspan="2"><a class="full-div-link" href={{ path('group_show', {slug: group.slug}) }}>{{ group.label }}</a></td>
+              <td colspan="2"><a class="full-div-link" href={{ path('group_show', {slug: group.slug}) }}>{{ group.persons|map(person=> person.firstname)|join(' - ')|ucWords }}</td>
+              <td colspan="2"><a class="full-div-link" href={{ path('group_show', {slug: group.slug}) }}>{{ group.totalExpenses is same as(0) ? "-" : group.totalExpenses|price }}</td>
+              <td><a class="full-div-link" href={{ path('group_edit', {slug: group.slug}) }}><i class="fa-solid fa-pencil" style="color: #6587c3;"></i></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
   </div>
 {% endblock %}
 

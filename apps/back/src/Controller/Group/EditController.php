@@ -19,7 +19,7 @@ class EditController extends AbstractController
     {
         $group = $repo->findOneBySlug($slug);
 
-        if(!$group instanceof Group){
+        if (!$group instanceof Group) {
             throw new NotFoundHttpException('The group was not found');
         }
 
@@ -27,7 +27,7 @@ class EditController extends AbstractController
             EditGroupType::class,
             $group,
             [
-                'method' => 'PUT'
+                'method' => 'PUT',
             ]);
 
         $form->handleRequest($request);

@@ -28,4 +28,17 @@ class GroupRepository extends ServiceEntityRepository
 
         return $group;
     }
+
+    /**
+     * @return array<int, Group>
+     */
+    public function findAllAndOrderByLastExpense(): array
+    {
+        return $this->createQueryBuilder('g')
+            ->leftJoin('g.expenses', 'e')
+            ->orderBy('e.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
