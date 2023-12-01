@@ -1,0 +1,53 @@
+name: "deploy"
+
+on:
+  push:
+    branches:
+      - main
+      - chore/workflows
+
+jobs:
+  staging:
+    runs-on:
+      - self-hosted
+      - S
+    steps:
+      - name: cleanup
+        run: |
+          rm -rf ~/.ssh/config
+          rm -rf ~/.ssh/staging.key
+      - uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
+      - uses: actions/checkout@v4
+      - run: docker compose build
+        env: 
+          COMPOSE_FILE: docker-compose.prod.yml
+      - run: docker compose push
+        env: 
+          COMPOSE_FILE: docker-compose.prod.yml
+      - run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName 64.226.68.69
+            User deploy
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_KEY: ${{ secrets.KNPEDGAR_PRIVATE_KEY_ID_RSA }}
+      - run: cat ~/.ssh/staging.key
+      - run: scp ./docker-compose.prod.yml staging:/home/deploy/docker-compose.prod.yml
+      - run: ssh staging docker login --username ${{ vars.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
+      - run: ssh staging docker compose -f docker-compose.prod.yml pull
+      - run: ssh staging docker compose -f docker-compose.prod.yml up --detach
+      - run: ssh staging curl ifconfig.me
+      - name: cleanup
+        run: |
+          rm -rf ~/.ssh/config
+          rm -rf ~/.ssh/staging.key
+        if: ${{ always() }}
