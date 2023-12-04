@@ -3,6 +3,9 @@
 
 {% block groupSingle %}
 	<div class="container-sm">
+		<div class="d-flex justify-content-center">
+			<a href={{ path('expense_create', {slug: group.slug}) }} class="btn btn-success mb-3">Ajouter une dépense</a>
+		</div>
 		<div class="card border border-2">
 			<div class="card-body">
 				<h5 class="card-title text-center">
@@ -34,13 +37,11 @@
 										<td>
 											{{ member.member.fullname|ucWords }}
 										</td>
-										{% if member.amount is not same as(0) %}
 											<td class="d-flex justify-content-end">
 												<span class={{ member.amount > 0 ? "text-success" : "text-danger"}}>
 													{{ member.amount is same as(0) ? "-" : member.amount|price('euros')}}
 												</span>
 											</td>
-										{% endif %}
 									</tr>
 								{% endfor %}
 							</table>

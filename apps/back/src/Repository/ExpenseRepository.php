@@ -28,6 +28,7 @@ class ExpenseRepository extends ServiceEntityRepository
             ->setParameter('group', $group->getId(), UuidType::NAME)
             ->setFirstResult($page * $step - $step)
             ->setMaxResults($step)
+            ->orderBy('e.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
         ;
