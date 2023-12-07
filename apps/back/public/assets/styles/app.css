@@ -17,3 +17,8 @@ body {
   text-decoration: none;
   color: black;
 }
+
+.pencil-edit {
+  display: flex;
+  justify-content: end;
+}

@@ -7,6 +7,7 @@ use App\Entity\Group;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Expense>
@@ -32,5 +33,17 @@ class ExpenseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function findByUuid(Uuid $id): ?Expense
+    {
+        /** @var Expense $expense|null */
+        $expense = $this->createQueryBuilder('expense')
+            ->where('expense.id = :id')
+            ->setParameter('id', $id, UuidType::NAME)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $expense;
     }
 }

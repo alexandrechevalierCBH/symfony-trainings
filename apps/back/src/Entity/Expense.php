@@ -75,14 +75,29 @@ class Expense
         return $this->description;
     }
 
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
     public function getAmount(): int
     {
         return $this->amount;
     }
 
+    public function setAmount(int $amount): void
+    {
+        $this->amount = $amount;
+    }
+
     public function getPayer(): Person
     {
         return $this->payer;
+    }
+
+    public function setPayer(Person $payer): void
+    {
+        $this->payer = $payer;
     }
 
     /**

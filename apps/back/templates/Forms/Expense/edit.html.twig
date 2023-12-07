@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+{% block title %}Modifier la dépense{% endblock %}
+{% block expenseEdit %}
+	<div class="container-sm">
+		<h1>Modifier la dépense</h1>
+		{{ form(editExpenseForm) }}
+	</div>
+{% endblock %}
