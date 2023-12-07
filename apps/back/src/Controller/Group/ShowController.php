@@ -2,53 +2,58 @@
 
 namespace App\Controller\Group;
 
-use App\Entity\Group;
-use App\Repository\ExpenseRepository;
-use App\Repository\GroupRepository;
+use App\UseCase\Group\Show\Input;
+use App\UseCase\Group\Show\Output;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ShowController extends AbstractController
 {
-    private const PAGE = 1;
-    private const STEP = 10;
+    public const DEFAULT_PAGE = 1;
+    public const DEFAULT_STEP = 10;
 
     #[Route('group/show/{slug}', methods: ['GET'], name: 'group_show')]
-    public function show(GroupRepository $repo, string $slug, ExpenseRepository $expenseRepo, Request $request): Response
+    public function show(string $slug, Request $request, MessageBusInterface $bus): Response
     {
-        $page = filter_var($request->get('page', self::PAGE), FILTER_VALIDATE_INT);
-        $step = filter_var($request->get('step', self::STEP), FILTER_VALIDATE_INT);
+        $page = filter_var($request->get('page', self::DEFAULT_PAGE), FILTER_VALIDATE_INT);
+        $step = filter_var($request->get('step', self::DEFAULT_STEP), FILTER_VALIDATE_INT);
 
-        if (!is_int($page) || $page <= 0) {
-            $this->addFlash('error', "Le paramètre 'page' est invalide");
-            $page = self::PAGE;
+        if (
+            !is_int($step)
+            || !is_int($page)
+            || !$page
+            || !$step
+            || $page <= 0
+            || $step <= 0
+        ) {
+            throw new BadRequestException('Invalid parameter');
         }
 
-        if (!is_int($step) || $step <= 0) {
-            $this->addFlash('error', "Le paramètre 'step' est invalide");
-            $step = self::STEP;
+        $input = new Input(
+            $slug,
+            $page,
+            $step,
+        );
+
+        $envelope = $bus->dispatch($input);
+        $output = $envelope->last(HandledStamp::class);
+
+        if (null === $output || !$output->getResult() instanceof Output) {
+            throw new \Exception('Could not get the group');
         }
 
-        $group = $repo->findOneBySlug($slug);
-
-        if (!$group instanceof Group) {
-            throw new NotFoundHttpException('The group was not found');
-        }
-
-        $expenses = $expenseRepo->findAndPaginateExpenses($group, $page, $step);
-
-        if (1 !== $page && null !== $expenses && 0 === count($expenses)) {
-            $this->addFlash('error', "Pas de résultat pour la page $page. Affichage de la page 1");
-            $page = self::PAGE;
-            $expenses = $expenseRepo->findAndPaginateExpenses($group, $page, $step);
+        if (null !== $output->getResult()->getFlash()) {
+            $this->addFlash('error', $output->getResult()->getFlash());
         }
 
         return $this->render('Group/single.html.twig', [
-            'group' => $group,
-            'paginatedExpenses' => $expenses,
+            'group' => $output->getResult()->getGroup(),
+            'paginatedExpenses' => $output->getResult()->getExpenses(),
             'page' => $page + 1,
             'step' => $step,
         ]);

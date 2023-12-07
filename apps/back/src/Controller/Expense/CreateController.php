@@ -22,6 +22,10 @@ class CreateController extends AbstractController
     {
         $group = $groupRepo->findOneBySlug($slug);
 
+        if (!$group instanceof Group) {
+            throw new \Exception('Group not found');
+        }
+
         $form = $this->createForm(
             CreateExpenseType::class,
             [
@@ -30,24 +34,26 @@ class CreateController extends AbstractController
             ]
         );
 
-        if (!$group instanceof Group) {
-            throw new \Exception('Group not found');
-        }
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var ExpenseTypeFormData $data */
             $data = $form->getData();
 
+            $beneficiariesId = array_map(
+                static fn ($beneficiary) => $beneficiary->getId(),
+                $data['beneficiaries']->toArray()
+            );
+
             try {
                 $bus->dispatch(new Input(
                     $data['description'],
                     $group,
                     $data['amount'],
-                    $data['payer'],
-                    $data['beneficiaries']->toArray()
+                    $data['payer']->getId(),
+                    $beneficiariesId
                 ));
+
                 $this->addFlash('success', 'La dépense a été créé avec succès !');
 
                 return $this->redirectToRoute('group_show', [

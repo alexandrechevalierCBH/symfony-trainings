@@ -3,24 +3,35 @@
 namespace App\UseCase\Expense\Create;
 
 use App\Entity\Expense;
+use App\Entity\Person;
+use App\Repository\PersonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class Handler
 {
-    public function __construct(private EntityManagerInterface $entityManagerInterface)
+    public function __construct(private EntityManagerInterface $entityManagerInterface, private PersonRepository $personRepository)
     {
     }
 
     public function __invoke(Input $input): Output
     {
-        $description = $input->getDescription();
-        $group = $input->getGroup();
+        $description = $input->description;
+        $group = $input->group;
+        $amount = (int) ($input->amount * 100);
 
-        $amount = (int) ($input->getAmount() * 100);
-        $payer = $input->getPayer();
-        $beneficiaries = $input->getBeneficiaries();
+        $payer = $this->personRepository->findOneByUuid($input->payerId);
+
+        if (!$payer instanceof Person) {
+            throw new \Exception('Could not get payer');
+        }
+
+        $beneficiaries = $this->personRepository->findPersonsByUuid($input->beneficiariesId);
+
+        if (0 === count($beneficiaries)) {
+            throw new \Exception('Could not get the beneficiary list');
+        }
 
         $expense = new Expense($description, $group, $amount, $payer, $beneficiaries);
 

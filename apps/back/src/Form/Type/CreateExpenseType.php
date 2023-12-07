@@ -50,7 +50,7 @@ class CreateExpenseType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new GreaterThan(0),
-                ]
+                ],
             ])
 
             ->add('beneficiaries', EntityType::class, [

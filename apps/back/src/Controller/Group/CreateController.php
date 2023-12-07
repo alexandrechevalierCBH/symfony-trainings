@@ -2,13 +2,14 @@
 
 namespace App\Controller\Group;
 
-use App\Entity\Group;
 use App\Form\Type\GroupType;
-use Cocur\Slugify\Slugify;
-use Doctrine\ORM\EntityManagerInterface;
+use App\UseCase\Group\Create\Input;
+use App\UseCase\Group\Create\Output;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -17,12 +18,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class CreateController extends AbstractController
 {
     #[Route('group/create', methods: ['GET', 'POST'], name: 'group_create')]
-    public function create(EntityManagerInterface $em, Request $request): Response
+    public function create(Request $request, MessageBusInterface $bus): Response
     {
         $time = time();
-        $slugify = new Slugify();
 
-        $form = $this->createForm(GroupType::class, ['time' => $time]);
+        $form = $this->createForm(
+            GroupType::class,
+            [
+                'time' => $time,
+            ]
+        );
 
         $form->handleRequest($request);
 
@@ -30,22 +35,30 @@ class CreateController extends AbstractController
             /** @var GroupTypeFormData $data */
             $data = $form->getData();
 
-            $label = $data['label'];
-            $members = $data['persons']->toArray();
-            $description = $data['description'] ?? null;
+            $personsId = array_map(
+                static fn ($member) => $member->getId(),
+                $data['persons']->toArray()
+            );
 
-            $group = new Group($label, $members, $description);
-
-            $group->setSlug(sprintf('%s-%s', $time, $slugify->slugify($data['slug'])));
+            $input = new Input(
+                $data['label'],
+                $personsId,
+                $time,
+                $data['description'] ?? null,
+            );
 
             try {
-                $em->persist($group);
-                $em->flush();
+                $envelope = $bus->dispatch($input);
+                $created = $envelope->last(HandledStamp::class);
+
+                if (null === $created || !$created->getResult() instanceof Output) {
+                    throw new \Exception('Group creation failed');
+                }
 
                 $this->addFlash('success', 'Le groupe a été créé avec succès !');
 
                 return $this->redirectToRoute('group_show', [
-                    'slug' => $group->getSlug(),
+                    'slug' => $created->getResult()->getGroup()->getSlug(),
                 ]);
             } catch (\Exception) {
                 $this->addFlash('error', 'La création du groupe a échoué');
