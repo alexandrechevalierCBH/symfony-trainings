@@ -60,7 +60,9 @@
 									{% for expense in paginatedExpenses %}
 										<tr>
 											<td>
-												{{ expense.description|capitalize }}
+												<a href={{ path('expense_show', {id: expense.id}) }} class="full-div-link">
+													{{ expense.description|capitalize }}
+												</a>
 											</td>
 											<td class="d-flex justify-content-end">
 												<span class="text-primary">

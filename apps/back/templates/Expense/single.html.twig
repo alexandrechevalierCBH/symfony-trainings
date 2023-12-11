@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	{{ expense.description }}
+{% endblock %}
+{% block expenseSingle %}
+	<div class="container-sm text-center">
+		<div class="card border border-2">
+			<div class="card-body">
+				<h5 class="card-title">{{ expense.description }}</h5>
+				<h6 class="card-subtitle p-2 text-muted">{{ expense.createdAt|date("d/m/Y") }}</h6>
+			</div>
+			<div class="card-body border-top">
+				<h5>Payée par
+					<span class="text-primary bold">{{ expense.payer.fullname|capitalize }}</span>
+				</h5>
+			</div>
+			<div class="card-body border-top">
+				<h4>Bénéficiaires</h4>
+			</div>
+			<table class="table table-striped">
+				{% for beneficiary in expense.beneficiaries %}
+					<tr>
+						<td>{{ beneficiary.firstname|capitalize }}</td>
+					</tr>
+				{% endfor %}
+			</table>
+			<div class="bg-info text-dark p-3 bold">
+				{{  expense.amount|price }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

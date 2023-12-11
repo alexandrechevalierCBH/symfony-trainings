@@ -3,7 +3,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>
-			{% block title %}Qui paie quoi ?
+			{% block title %}
+				Qui paie quoi ?
 			{% endblock %}
 		</title>
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
@@ -23,11 +24,11 @@
 	<body>
 		{% block header %}
 			<header class="border-bottom p-1">
-                <div class="fs-1 d-flex">
-                    <a href={{ path('group_list') }} class="d-flex justify-content-center align-items-center full-div-link">
-                         Qui paie quoi ? 
+				<div class="fs-1 d-flex">
+					<a href={{ path('group_list') }} class="d-flex justify-content-center align-items-center full-div-link">
+						Qui paie quoi ?
 					</a>
-                </div>
+				</div>
 				<ul class="nav justify-content-center">
 					<li class="nav-item">
 						<a class="nav-link" href={{ path('group_list') }}>Mes groupes</a>
@@ -49,14 +50,15 @@
 			</div>
 		{% endfor %}
 		{% block body %}
-            <div class="p-3">
-                {% block groupSingle %}{% endblock %}
-                {% block groupList %}{% endblock %}
-                {% block groupCreate %}{% endblock %}
-                {% block groupEdit %}{% endblock %}
-                {% block expenseCreate %}{% endblock %}
-                {% block expenseEdit %}{% endblock %}
-            </div>
+			<div class="p-3">
+				{% block groupSingle %}{% endblock %}
+				{% block groupList %}{% endblock %}
+				{% block groupCreate %}{% endblock %}
+				{% block groupEdit %}{% endblock %}
+				{% block expenseCreate %}{% endblock %}
+				{% block expenseEdit %}{% endblock %}
+				{% block expenseSingle %}{% endblock %}
+			</div>
 		{% endblock %}
 	</body>
 </html>
