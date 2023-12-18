@@ -1,0 +1,14 @@
+App\Entity\Expense:
+  attributes:
+    id:
+      groups: ["default"]
+    createdAt:
+      groups: ["default"]
+    amount:
+      groups: ["default"]
+    payer:
+      groups: ["default"]
+    beneficiaries:
+      groups: ["default"]
+    description:
+      groups: ["default"]

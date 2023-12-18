@@ -1,0 +1,16 @@
+App\Entity\Group:
+  attributes:
+    id:
+      groups: ["default"]
+    label:
+      groups: ["default"]
+    slug:
+      groups: ["default"]
+    persons:
+      groups: ["default"]
+    expenses:
+      groups: ["default"]
+    description:
+      groups: ["default"]
+    createdAt:
+      groups: ["default"]

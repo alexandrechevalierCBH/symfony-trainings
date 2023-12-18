@@ -19,12 +19,10 @@ class Handler
     {
         $slugify = new Slugify();
 
-        $time = $input->time;
-
         $label = $input->label;
         $description = $input->description;
 
-        $persons = $this->personRepository->findPersonsByUuid($input->personsId);
+        $persons = $this->personRepository->findAll();
 
         if (0 === count($persons)) {
             throw new \Exception('Could not get the beneficiary list');
@@ -34,7 +32,7 @@ class Handler
 
         $group->setSlug(sprintf(
             '%s-%s',
-            $time,
+            time(),
             $slugify->slugify($group->getSlug())
         ));
 

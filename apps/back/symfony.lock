@@ -1,4 +1,13 @@
 {
+    "doctrine/annotations": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.10",
+            "ref": "64d8583af5ea57b7afa4aba4b159907f3a148b05"
+        }
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.10",
         "recipe": {
@@ -49,6 +58,9 @@
         "files": [
             ".php-cs-fixer.dist.php"
         ]
+    },
+    "mrsuh/json-validation-bundle": {
+        "version": "4.1.1"
     },
     "phpstan/phpstan": {
         "version": "1.10",
