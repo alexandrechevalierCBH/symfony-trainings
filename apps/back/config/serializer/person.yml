@@ -1,0 +1,10 @@
+App\Entity\Person:
+  attributes:
+    id:
+      groups: ["default"]
+    firstname:
+      groups: ["default"]
+    lastname:
+      groups: ["default"]
+    email:
+      groups: ["default"]

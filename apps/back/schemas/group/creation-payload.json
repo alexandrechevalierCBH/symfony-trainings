@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://quipaiequoi.com/creation-payload.json",
+  "type": "object",
+  "required": ["label", "personsId"],
+  "additionalProperties": false,
+  "properties": {
+    "label": {
+      "type": "string",
+      "minLength": 2
+    },
+
+    "personsId": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+
+    "description": {
+      "type": "string"
+    }
+  }
+}
