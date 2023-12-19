@@ -1,4 +1,28 @@
 framework:
-    messenger:
-        transports:
-        routing:
+  messenger:
+    default_bus: command_bus
+    buses:
+      command_bus:
+        default_middleware: true
+        middleware:
+          - doctrine_transaction
+          - App\Middleware\LockMiddleware
+
+    transports:
+      async_priority_high:
+        dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+        options:
+          queue_name: high
+
+      async_priority_low:
+        dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+        options:
+          queue_name: low
+
+      failed: "doctrine://default?queue_name=failed"
+
+    failure_transport: failed
+
+    routing:
+      'App\UseCase\Expense\Create\Input': async_priority_low
+      'App\UseCase\Expense\Create\InputHigh': async_priority_high

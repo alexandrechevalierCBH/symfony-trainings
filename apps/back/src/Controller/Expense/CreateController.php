@@ -2,10 +2,12 @@
 
 namespace App\Controller\Expense;
 
+use App\Bus\CommandBus;
 use App\Entity\Group;
 use App\Form\Type\CreateExpenseType;
 use App\Repository\GroupRepository;
 use App\UseCase\Expense\Create\Input;
+use App\UseCase\Expense\Create\InputHigh;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,23 +47,38 @@ class CreateController extends AbstractController
                 $data['beneficiaries']->toArray()
             );
 
-            try {
-                $bus->dispatch(new Input(
-                    $data['description'],
-                    $group,
-                    $data['amount'],
-                    $data['payer']->getId(),
-                    $beneficiariesId
-                ));
+            if ($data['amount'] > 100) {
+                $bus->dispatch(
+                    new InputHigh(
+                        $data['description'],
+                        $group->getSlug(),
+                        $data['amount'],
+                        $data['payer']->getId(),
+                        $beneficiariesId
+                    )
+                );
+            } else {
 
-                $this->addFlash('success', 'La dépense a été créé avec succès !');
-
-                return $this->redirectToRoute('group_show', [
-                    'slug' => $slug,
-                ]);
-            } catch (\Exception) {
-                $this->addFlash('error', 'La création de la dépense a échoué');
+                // try {
+                $bus->dispatch(
+                    new Input(
+                        $data['description'],
+                        $group->getSlug(),
+                        $data['amount'],
+                        $data['payer']->getId(),
+                        $beneficiariesId
+                    )
+                );
             }
+
+            $this->addFlash('success', 'La dépense a été créé avec succès !');
+
+            return $this->redirectToRoute('group_show', [
+                'slug' => $slug,
+            ]);
+            // } catch (\Exception) {
+            //     $this->addFlash('error', 'La création de la dépense a échoué');
+            // }
         }
 
         return $this->render('Forms/Expense/create.html.twig', [

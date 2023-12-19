@@ -2,11 +2,10 @@
 
 namespace App\UseCase\Expense\Create;
 
-use App\Entity\Group;
 use App\Message\Lockable;
 use Symfony\Component\Uid\Uuid;
 
-class Input implements Lockable
+class InputHigh implements Lockable
 {
     /**
      * @param array<int, Uuid> $beneficiariesId

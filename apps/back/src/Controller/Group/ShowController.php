@@ -2,6 +2,7 @@
 
 namespace App\Controller\Group;
 
+use App\Bus\CommandBus;
 use App\UseCase\Group\Show\Input;
 use App\UseCase\Group\Show\Output;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +19,7 @@ class ShowController extends AbstractController
     public const DEFAULT_STEP = 10;
 
     #[Route('group/show/{slug}', methods: ['GET'], name: 'group_show')]
-    public function show(string $slug, Request $request, MessageBusInterface $bus): Response
+    public function show(string $slug, Request $request, CommandBus $bus): Response
     {
         $page = filter_var($request->get('page', self::DEFAULT_PAGE), FILTER_VALIDATE_INT);
         $step = filter_var($request->get('step', self::DEFAULT_STEP), FILTER_VALIDATE_INT);
@@ -40,20 +41,19 @@ class ShowController extends AbstractController
             $step,
         );
 
-        $envelope = $bus->dispatch($input);
-        $output = $envelope->last(HandledStamp::class);
+        $result = $bus->dispatch($input);
 
-        if (null === $output || !$output->getResult() instanceof Output) {
+        if (null === $result || !$result instanceof Output) {
             throw new \Exception('Could not get the group');
         }
 
-        if (null !== $output->getResult()->getFlash()) {
-            $this->addFlash('error', $output->getResult()->getFlash());
+        if (null !== $result->getFlash()) {
+            $this->addFlash('error', $result->getFlash());
         }
 
         return $this->render('Group/single.html.twig', [
-            'group' => $output->getResult()->getGroup(),
-            'paginatedExpenses' => $output->getResult()->getExpenses(),
+            'group' => $result->getGroup(),
+            'paginatedExpenses' => $result->getExpenses(),
             'page' => $page + 1,
             'step' => $step,
         ]);
