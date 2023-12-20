@@ -1,12 +1,20 @@
 framework:
   messenger:
     default_bus: command_bus
+
     buses:
       command_bus:
         default_middleware: true
         middleware:
           - doctrine_transaction
           - App\Middleware\LockMiddleware
+          - App\Middleware\ExpenseFailedMiddleWare
+
+      event_bus:
+        default_middleware: allow_no_handlers
+        middleware:
+          - doctrine_transaction
+          - dispatch_after_current_bus
 
     transports:
       async_priority_high:

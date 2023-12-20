@@ -2,6 +2,7 @@
 
 namespace App\Event;
 
+use App\Stamp\LockStamp;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -53,8 +54,12 @@ class WorkerListener
         $this->loggerInterface->log(LogLevel::CRITICAL, 'WorkerMessageReceivedEvent');
     }
 
-    public function onWorkerMessageFailedEvent()
+    public function onWorkerMessageFailedEvent(WorkerMessageFailedEvent $event)
     {
+        $retry = $event->willRetry();
+        $lock = $event->getEnvelope()->all(LockStamp::class)[0]->lockName;
+        // dump($lock, $retry);
+        // dump($event);
         $this->loggerInterface->log(LogLevel::CRITICAL, 'WorkerMessageFailedEvent');
     }
 }

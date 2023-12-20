@@ -4,6 +4,7 @@ namespace App\Controller\Expense;
 
 use App\Bus\CommandBus;
 use App\Entity\Group;
+use App\Event\ExpenseCreatedEvent;
 use App\Form\Type\CreateExpenseType;
 use App\Repository\GroupRepository;
 use App\UseCase\Expense\Create\Input;
@@ -11,6 +12,7 @@ use App\UseCase\Expense\Create\InputHigh;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -20,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CreateController extends AbstractController
 {
     #[Route('group/{slug}/expense', methods: ['GET', 'POST'], name: 'expense_create')]
-    public function create(MessageBusInterface $bus, GroupRepository $groupRepo, Request $request, string $slug): Response
+    public function create(MessageBusInterface $commandBus, GroupRepository $groupRepo, Request $request, string $slug): Response
     {
         $group = $groupRepo->findOneBySlug($slug);
 
@@ -48,7 +50,7 @@ class CreateController extends AbstractController
             );
 
             if ($data['amount'] > 100) {
-                $bus->dispatch(
+                $commandBus->dispatch(
                     new InputHigh(
                         $data['description'],
                         $group->getSlug(),
@@ -60,7 +62,7 @@ class CreateController extends AbstractController
             } else {
 
                 // try {
-                $bus->dispatch(
+                $commandBus->dispatch(
                     new Input(
                         $data['description'],
                         $group->getSlug(),

@@ -27,7 +27,7 @@ class LockMiddleware implements MiddlewareInterface
 
         if ([] === $envelope->all(LockStamp::class)) {
             $envelope = $envelope->with(new LockStamp(
-                $message->groupSlug
+                $message->groupSlug . time()
             ));
 
             return $stack->next()->handle($envelope, $stack);
