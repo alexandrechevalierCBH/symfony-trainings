@@ -8,8 +8,7 @@ use App\UseCase\Group\Create\Output;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Stamp\HandledStamp;
+use App\Bus\CommandBus;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -18,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CreateController extends AbstractController
 {
     #[Route('group/create', methods: ['GET', 'POST'], name: 'group_create')]
-    public function create(Request $request, MessageBusInterface $bus): Response
+    public function create(Request $request, CommandBus $bus): Response
     {
         $time = time();
 
@@ -48,17 +47,16 @@ class CreateController extends AbstractController
             );
 
             try {
-                $envelope = $bus->dispatch($input);
-                $created = $envelope->last(HandledStamp::class);
+                $result = $bus->dispatch($input);
 
-                if (null === $created || !$created->getResult() instanceof Output) {
+                if (null === $result || !$result instanceof Output) {
                     throw new \Exception('Group creation failed');
                 }
 
                 $this->addFlash('success', 'Le groupe a été créé avec succès !');
 
                 return $this->redirectToRoute('group_show', [
-                    'slug' => $created->getResult()->getGroup()->getSlug(),
+                    'slug' => $result->getGroup()->getSlug(),
                 ]);
             } catch (\Exception) {
                 $this->addFlash('error', 'La création du groupe a échoué');
